@@ -1,0 +1,56 @@
+# Diagram Build Specification: Cell-Based Architecture
+
+## Layout
+
+Two-lane horizontal layout per the template specification.
+
+### Control Plane Lane (Top)
+
+Components:
+- **Router / Load Balancer**: Receives incoming traffic. Positioned at the left edge of the Control Plane lane.
+- **Cell Assignment Service**: Determines which cell handles a given request based on partition key. Positioned center of the Control Plane lane.
+- **Health Monitor**: Continuously evaluates cell health. Positioned at the right edge of the Control Plane lane.
+
+Connections:
+- Solid black arrow from external traffic (left) into Router.
+- Solid gray arrow from Router to Cell Assignment Service.
+- Solid gray arrow from Health Monitor to Cell Assignment Service (health status feed).
+
+### Data Plane Lane (Bottom)
+
+Components:
+- **Cell A**: Rounded rectangle. Contains: Compute, Queue, Data Store. Label: "Cell A — Partition 1-1000."
+- **Cell B**: Rounded rectangle. Contains: Compute, Queue, Data Store. Label: "Cell B — Partition 1001-2000."
+- **Cell C**: Rounded rectangle. Contains: Compute, Queue, Data Store. Label: "Cell C — Partition 2001-3000."
+
+Each cell is self-contained. No arrows between cells.
+
+Connections:
+- Solid gray arrow from Cell Assignment Service down to each cell (routing).
+
+### Failure Boundary
+
+- Dashed red rectangle around Cell B only.
+- Label: "Failure Boundary — Blast radius limited to Partition 1001-2000."
+- Dashed red arrow from Cell B's Data Store to the failure boundary label.
+
+### Shared Dependency Box
+
+- Dotted-border rectangle below the cells, labeled "Global Configuration Store."
+- Dotted gray lines from each cell to this box.
+- Note: This is the single point of shared risk. The article discusses static stability to mitigate this.
+
+## Color Palette
+
+Per template specification:
+- Control Plane background: #F5F5F5
+- Data Plane background: #FFFFFF
+- Cell borders: #333333
+- Cell fill: #E8EEF2
+- Failure boundary: #CC0000 dashed
+- Arrows: #000000 (traffic), #666666 (routing)
+- Shared dependency: #999999 dotted
+
+## Export
+
+Render to diagram.png at 2x resolution.
