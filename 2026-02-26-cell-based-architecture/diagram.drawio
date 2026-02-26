@@ -1,56 +1,175 @@
-# Diagram Build Specification: Cell-Based Architecture
-
-## Layout
-
-Two-lane horizontal layout per the template specification.
-
-### Control Plane Lane (Top)
-
-Components:
-- **Router / Load Balancer**: Receives incoming traffic. Positioned at the left edge of the Control Plane lane.
-- **Cell Assignment Service**: Determines which cell handles a given request based on partition key. Positioned center of the Control Plane lane.
-- **Health Monitor**: Continuously evaluates cell health. Positioned at the right edge of the Control Plane lane.
-
-Connections:
-- Solid black arrow from external traffic (left) into Router.
-- Solid gray arrow from Router to Cell Assignment Service.
-- Solid gray arrow from Health Monitor to Cell Assignment Service (health status feed).
-
-### Data Plane Lane (Bottom)
-
-Components:
-- **Cell A**: Rounded rectangle. Contains: Compute, Queue, Data Store. Label: "Cell A — Partition 1-1000."
-- **Cell B**: Rounded rectangle. Contains: Compute, Queue, Data Store. Label: "Cell B — Partition 1001-2000."
-- **Cell C**: Rounded rectangle. Contains: Compute, Queue, Data Store. Label: "Cell C — Partition 2001-3000."
-
-Each cell is self-contained. No arrows between cells.
-
-Connections:
-- Solid gray arrow from Cell Assignment Service down to each cell (routing).
-
-### Failure Boundary
-
-- Dashed red rectangle around Cell B only.
-- Label: "Failure Boundary — Blast radius limited to Partition 1001-2000."
-- Dashed red arrow from Cell B's Data Store to the failure boundary label.
-
-### Shared Dependency Box
-
-- Dotted-border rectangle below the cells, labeled "Global Configuration Store."
-- Dotted gray lines from each cell to this box.
-- Note: This is the single point of shared risk. The article discusses static stability to mitigate this.
-
-## Color Palette
-
-Per template specification:
-- Control Plane background: #F5F5F5
-- Data Plane background: #FFFFFF
-- Cell borders: #333333
-- Cell fill: #E8EEF2
-- Failure boundary: #CC0000 dashed
-- Arrows: #000000 (traffic), #666666 (routing)
-- Shared dependency: #999999 dotted
-
-## Export
-
-Render to diagram.png at 2x resolution.
+<mxfile host="app.diagrams.net" modified="2026-02-26T00:00:00.000Z" agent="Kiro" version="21.0.0" type="device">
+  <diagram name="Cell-Based Architecture" id="cell-arch-01">
+    <mxGraphModel dx="1422" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t1" value="Cell-Based Architecture — Fault Isolation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="300" y="15" width="600" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cp" value="CONTROL PLANE" style="swimlane;fontStyle=1;align=left;verticalAlign=top;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="1120" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" value="Router /&lt;br&gt;Load Balancer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EEF2;strokeColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="cp">
+          <mxGeometry x="60" y="45" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ca" value="Cell Assignment&lt;br&gt;Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EEF2;strokeColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="cp">
+          <mxGeometry x="440" y="45" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="hm" value="Health&lt;br&gt;Monitor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EEF2;strokeColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="cp">
+          <mxGeometry x="880" y="45" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="el" value="Incoming&#xa;Traffic" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=11;fontStyle=2;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-30" y="130" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="55" y="150" as="sourcePoint" />
+            <mxPoint x="100" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="r1" target="ca">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="health status" style="endArrow=classic;html=1;rounded=0;strokeWidth=1;strokeColor=#999999;dashed=1;dashPattern=8 8;fontSize=9;fontColor=#999999;" edge="1" parent="1" source="hm" target="ca">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dp" value="DATA PLANE" style="swimlane;fontStyle=1;align=left;verticalAlign=top;startSize=30;fillColor=#ffffff;strokeColor=#666666;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="260" width="1120" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="cA" value="Cell A" style="swimlane;fontStyle=1;align=left;verticalAlign=top;startSize=25;fillColor=#E8EEF2;strokeColor=#333333;fontSize=11;rounded=1;" vertex="1" parent="dp">
+          <mxGeometry x="40" y="50" width="280" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="cAp" value="Partition 1–1000" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#666666;fontStyle=2;" vertex="1" parent="cA">
+          <mxGeometry x="100" y="2" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cAc" value="Compute" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cA">
+          <mxGeometry x="20" y="45" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cAq" value="Queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cA">
+          <mxGeometry x="150" y="45" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cAs" value="Data Store" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cA">
+          <mxGeometry x="90" y="120" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cB" value="Cell B" style="swimlane;fontStyle=1;align=left;verticalAlign=top;startSize=25;fillColor=#E8EEF2;strokeColor=#333333;fontSize=11;rounded=1;" vertex="1" parent="dp">
+          <mxGeometry x="420" y="50" width="280" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="cBp" value="Partition 1001–2000" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#666666;fontStyle=2;" vertex="1" parent="cB">
+          <mxGeometry x="90" y="2" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cBc" value="Compute" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cB">
+          <mxGeometry x="20" y="45" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cBq" value="Queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cB">
+          <mxGeometry x="150" y="45" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cBs" value="Data Store" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cB">
+          <mxGeometry x="90" y="120" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cC" value="Cell C" style="swimlane;fontStyle=1;align=left;verticalAlign=top;startSize=25;fillColor=#E8EEF2;strokeColor=#333333;fontSize=11;rounded=1;" vertex="1" parent="dp">
+          <mxGeometry x="800" y="50" width="280" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="cCp" value="Partition 2001–3000" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#666666;fontStyle=2;" vertex="1" parent="cC">
+          <mxGeometry x="90" y="2" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cCc" value="Compute" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cC">
+          <mxGeometry x="20" y="45" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cCq" value="Queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cC">
+          <mxGeometry x="150" y="45" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cCs" value="Data Store" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#666666;fontSize=10;" vertex="1" parent="cC">
+          <mxGeometry x="90" y="120" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="fb" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#CC0000;strokeWidth=3;dashed=1;dashPattern=10 6;" vertex="1" parent="dp">
+          <mxGeometry x="410" y="38" width="300" height="242" as="geometry" />
+        </mxCell>
+        <mxCell id="fl" value="FAILURE BOUNDARY&#xa;Blast radius: Partition 1001–2000 only" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#CC0000;" vertex="1" parent="dp">
+          <mxGeometry x="420" y="285" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ra" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="220" as="sourcePoint" />
+            <mxPoint x="220" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rb" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="220" as="sourcePoint" />
+            <mxPoint x="600" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rc" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="220" as="sourcePoint" />
+            <mxPoint x="980" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gs" value="Global Configuration Store (Shared Dependency)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;strokeWidth=1;dashed=1;dashPattern=6 4;fontSize=11;fontStyle=1;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="350" y="660" width="500" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="da" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=1;strokeColor=#999999;dashed=1;dashPattern=4 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="560" as="sourcePoint" />
+            <mxPoint x="480" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="db" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=1;strokeColor=#999999;dashed=1;dashPattern=4 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="560" as="sourcePoint" />
+            <mxPoint x="600" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dc" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=1;strokeColor=#999999;dashed=1;dashPattern=4 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="560" as="sourcePoint" />
+            <mxPoint x="720" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rn" value="Shared risk — mitigate via caching or local fallback" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=2;fontColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="400" y="710" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#cccccc;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="750" width="300" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lgt" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="55" y="755" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="790" as="sourcePoint" />
+            <mxPoint x="120" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg1t" value="Traffic flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="130" y="780" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="810" as="sourcePoint" />
+            <mxPoint x="120" y="810" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg2t" value="Routing" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="130" y="800" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#CC0000;strokeWidth=2;dashed=1;dashPattern=8 6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="823" width="60" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="Failure boundary" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="130" y="820" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=1;strokeColor=#999999;dashed=1;dashPattern=4 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="845" as="sourcePoint" />
+            <mxPoint x="120" y="845" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg4t" value="Shared dependency" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="130" y="838" width="120" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
