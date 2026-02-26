@@ -4,7 +4,7 @@ A structured technical knowledge system documenting cloud networking and distrib
 
 ## Mission
 
-This repository builds a long-term body of work on resilience engineering for distributed systems and cloud networking. Every article is written at the depth expected of a principal-level infrastructure architect. The focus is on failure containment, blast radius analysis, isolation patterns, and the operational realities of running resilient systems at scale.
+This repository builds a long-term body of work on resilience engineering for distributed systems and cloud networking. The focus is on failure containment, blast radius analysis, isolation patterns, and the operational realities of running resilient systems at scale.
 
 ## Audience
 

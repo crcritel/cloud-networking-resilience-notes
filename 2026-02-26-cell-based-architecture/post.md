@@ -100,7 +100,6 @@ Cell-based architecture represents hard partitioning with strict isolation bound
 
 - [Shuffle Sharding: Massive and Magical Fault Isolation (Colm MacCarthaigh)](https://aws.amazon.com/builders-library/workload-isolation-using-shuffle-sharding/)
 - [Static Stability Using Availability Zones](https://aws.amazon.com/builders-library/static-stability-using-availability-zones/)
-- [Release It! by Michael Nygard — Stability Patterns](https://pragprog.com/titles/mnee2/release-it-second-edition/)
 
 ## Tags
 
