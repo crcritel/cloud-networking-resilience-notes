@@ -26,7 +26,9 @@ Every article folder must contain exactly these files:
 |------|---------|
 | `post.md` | The article content |
 | `diagram.drawio` | The editable diagram source or build specification |
-| `diagram.png` | The rendered diagram for inline display |
+| `diagram.png` | The rendered diagram for inline display (exported from draw.io) |
+
+The `diagram.png` file must be exported manually from `diagram.drawio` using draw.io (File > Export as > PNG, 2x resolution). It cannot be auto-generated. Articles without an exported PNG are considered incomplete.
 
 No additional files unless explicitly justified (e.g., supplementary data tables).
 

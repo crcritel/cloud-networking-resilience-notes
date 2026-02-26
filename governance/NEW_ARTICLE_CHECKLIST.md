@@ -28,7 +28,7 @@ This checklist must be followed every time a new article is created. No exceptio
 - [ ] Diagram includes control plane and data plane lanes (if applicable)
 - [ ] Failure boundaries are marked
 - [ ] All components are labeled
-- [ ] Diagram rendered to `diagram.png`
+- [ ] Diagram exported to `diagram.png` from draw.io at 2x resolution
 
 ## Quality Checks
 

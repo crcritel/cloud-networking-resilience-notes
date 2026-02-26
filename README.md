@@ -58,9 +58,12 @@ All article folders follow the format `YYYY-MM-DD-topic-slug`. Lowercase, hyphen
 ## Diagram Workflow
 
 1. Review the diagram build specification in `diagram-template.drawio` or the article's `diagram.drawio`.
-2. Construct the diagram in draw.io or a compatible editor following the specification.
-3. Export to PNG at 2x resolution.
-4. Save as `diagram.png` in the article folder.
+2. Open the `.drawio` file in draw.io or a compatible editor.
+3. The diagram renders from the XML automatically — AWS icons, swimlanes, and connectors are all embedded.
+4. To export: File > Export as > PNG at 2x resolution.
+5. Save as `diagram.png` in the article folder.
+
+Note: `diagram.png` must be exported manually. It cannot be auto-generated.
 
 ## Governance
 
