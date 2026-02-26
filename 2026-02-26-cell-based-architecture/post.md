@@ -72,6 +72,8 @@ Capacity planning shifts from fleet-level to cell-level. Each cell must be provi
 
 ## Diagram Walkthrough
 
+![Cell-Based Architecture Diagram](diagram.png)
+
 The accompanying diagram illustrates a three-cell deployment. The Control Plane lane at the top contains the Router, Cell Assignment Service, and Health Monitor. Incoming traffic enters through the Router, which consults the Cell Assignment Service to determine the target cell. The Health Monitor feeds cell health status back to the assignment service.
 
 The Data Plane lane contains three cells (A, B, C), each with its own compute, queue, and data store. The dashed red boundary around Cell B represents a failure scenario: the blast radius is contained entirely within Cell B's partition (1001-2000). Cells A and C continue operating normally.
