@@ -16,7 +16,9 @@ This article addresses systems operating at scale where hundreds of thousands or
 
 Cell-based architecture partitions a system into multiple independent, self-contained units called cells. Each cell is a complete replica of the service stack: compute, storage, queueing, and any other dependencies required to serve its assigned partition of traffic.
 
-A routing layer in the control plane assigns incoming requests to a specific cell based on a partition key, typically derived from tenant ID, account ID, or geographic region. Once assigned, a request is processed entirely within that cell. Cells do not communicate with each other during request processing.
+A cell is a logical failure isolation boundary at the service architecture layer. It must not be conflated with a single availability zone or a single data center. In production systems, a cell typically spans multiple availability zones to provide intra-cell high availability. The isolation boundary is architectural, not merely infrastructural. Two cells may run in the same physical facilities and still maintain complete failure independence at the service layer.
+
+A routing layer in the control plane assigns incoming requests to a specific cell based on a partition key, typically derived from tenant ID, account ID, or geographic region. Once assigned, a request is processed entirely within that cell. Cells are designed to avoid synchronous cross-cell dependencies during request processing. Limited asynchronous replication or global metadata exchange may exist between cells, but synchronous failure coupling between cells must be eliminated.
 
 The critical property is isolation. A failure within Cell A does not propagate to Cell B or Cell C. The blast radius of any single-cell failure is bounded to the partition of traffic assigned to that cell. If a cell serves 5% of total traffic, a complete cell failure affects only that 5%.
 
@@ -30,9 +32,11 @@ The control plane is responsible for cell assignment, health monitoring, and, in
 
 **Control plane unavailability.** The cell assignment service becomes unreachable. Affected scope: potentially global for new requests, but existing cell assignments continue to function if clients cache their assignments. This is the static stability property. Recovery: restore the control plane. Existing traffic continues uninterrupted.
 
-**Shared dependency failure.** If cells depend on a global configuration store or shared metadata service, its failure can affect all cells simultaneously. Affected scope: global. This is the most dangerous failure mode in a cell-based architecture and must be mitigated through caching, local fallbacks, or elimination of the shared dependency.
+**Shared dependency failure.** Shared services are not inherently prohibited in a cell-based architecture. The architectural risk arises from synchronous runtime dependency in the request path. A global configuration store that is read-only, versioned, and aggressively cached is acceptable if cells can continue operating during temporary global service unavailability. The failure becomes dangerous when cells require synchronous reads from a shared service to process individual requests. In that case, a shared service outage affects all cells simultaneously. Affected scope: global. Mitigation requires caching with bounded staleness, local fallbacks, or elimination of the synchronous dependency.
 
 **Partition key hotspot.** An uneven distribution of traffic across cells due to a skewed partition key. Affected scope: single cell (overloaded), but can degrade to a broader issue if the overloaded cell triggers cascading retries. Recovery: rebalance partition assignments or split the hot cell.
+
+**Cascading overload after cell failure.** When a cell fails and its traffic is redistributed to surviving cells, those cells must have sufficient capacity headroom to absorb the additional load. Without per-cell capacity buffers, the redistribution itself can trigger cascading overload across the remaining cells. Isolation reduces blast radius but does not eliminate the need for capacity engineering. Each cell must be provisioned not only for its own peak load but also for a share of redistributed traffic from a failed peer.
 
 ## Trade-offs
 
@@ -89,6 +93,8 @@ Cell sizing should start conservative. Begin with fewer, larger cells and split 
 Static stability requires that cells cache their configuration locally. If the control plane becomes unavailable, cells must continue serving requests using their last known configuration. This implies that configuration changes propagate asynchronously and that cells tolerate stale configuration for bounded periods.
 
 Health checking must distinguish between cell-level and component-level failures. A single failed instance within a cell is not a cell failure. Cell-level health is determined by aggregate metrics across the cell's components.
+
+Cell-based architecture represents hard partitioning with strict isolation boundaries. Each cell owns its partition exclusively, and failure within one cell has no probabilistic overlap with any other cell. This is distinct from shuffle sharding, which provides probabilistic isolation by assigning each tenant to a randomized subset of overlapping shards. Both approaches reduce correlated failure risk. Cells provide deterministic blast-radius containment at the cost of higher infrastructure duplication. Shuffle sharding provides statistical isolation with better resource efficiency but weaker worst-case guarantees. The choice between them depends on whether the system requires absolute containment or can tolerate probabilistic risk reduction.
 
 ## References
 
