@@ -24,6 +24,7 @@ Infrastructure architects, site reliability engineers, and distributed systems e
 | Date | Topic | Link |
 |------|-------|------|
 | 2026-02-26 | Cell-Based Architecture | [post.md](2026-02-26-cell-based-architecture/post.md) |
+| 2026-03-15 | Shuffle Sharding | [post.md](2026-03-15-shuffle-sharding/post.md) |
 
 ## Structure
 
